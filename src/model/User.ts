@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 //document for tssefty
 
-export interface Messgae extends Document {
+export interface Message extends Document {
   content: string;
   createdAt: Date;
 }
 
-const MessageSchema: Schema<Messgae> = new Schema({
+const MessageSchema: Schema<Message> = new Schema({
   content: {
     type: String,
     required: true,
@@ -17,3 +17,59 @@ const MessageSchema: Schema<Messgae> = new Schema({
     default: Date.now,
   },
 });
+
+export interface User extends Document {
+  username: string;
+  email: string;
+  password: string;
+  verifyCode: string;
+  verifyCodeExpiry: Date;
+  isVerified: boolean;
+  isAcceptingMessage: boolean;
+  messages: Message[];
+}
+
+const UserSchema: Schema<User> = new Schema({
+  username: {
+    type: String,
+    required: [true, "Username is required"],
+    trim: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: [true, "Email is required"],
+    unique: true,
+    match: [/.+\@.+\..+/, "please use a valid email address"],
+    //match is for validation purpose
+  },
+  password: {
+    type: String,
+    required: [true, "Password is required"],
+  },
+  verifyCode: {
+    type: String,
+    required: [true, "verifyCode is required"],
+  },
+  verifyCodeExpiry: {
+    type: Date,
+    required: [true, "verifyCodeExpiry is required"],
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isAcceptingMessage: {
+    type: Boolean,
+    default: true,
+  },
+  messages: [MessageSchema],
+});
+//check if moongose is created and return the mongoose type of the User
+const UserModel =
+  (mongoose.models.User as mongoose.Model<User>) ||
+  mongoose.model<User>("User", UserSchema);
+
+//First is when model is already created and second if it is the first time creating
+
+export default UserModel;
