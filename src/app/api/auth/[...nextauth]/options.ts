@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
+// import GitHubProvider from "next-auth/providers/github";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -43,15 +44,28 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    // GitHubProvider({
+    //   clientId: process.env.GITHUB_ID,
+    //   clientSecret: process.env.GITHUB_SECRET,
+    // }),
   ],
   callbacks: {
     //note: always return session for session and token for token
     async session({ session, token }) {
+      if (token) {
+        session.user._id = token._id;
+        session.user.isVerified = token.isVerified;
+        session.user.isAcceptingMessage = token.isAcceptingMessage;
+        session.user.username = token.username;
+      }
       return session;
     },
     async jwt({ token, user }) {
       if (user) {
         token._id = user._id?.toString();
+        token.isVerified = user.isVerified;
+        token.isAcceptingMessages = user.isAcceptingMessage;
+        token.username = user.username;
       }
       return token;
     },
