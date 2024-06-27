@@ -26,6 +26,7 @@ const usePost = (qkey?: string) => {
   });
   return {
     postMutation,
+    error,
     data,
     isError,
     isSuccess,

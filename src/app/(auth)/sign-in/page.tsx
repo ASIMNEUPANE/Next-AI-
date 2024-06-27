@@ -12,7 +12,7 @@ import axios, { AxiosError } from "axios";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
 function page() {
-  // const { data, isError, isPending, isSuccess, postMutation } = usePost();
+  const { data, isError, isPending, isSuccess, postMutation } = usePost("");
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -34,6 +34,30 @@ function page() {
       password: "",
     },
   });
+
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
+    const {
+      data: subData,
+      isError,
+      isPending,
+      isSuccess,
+      error,
+      postMutation,
+    } = usePost("user");
+
+    postMutation({ urls: "sign-up", data });
+
+    if (isSuccess) {
+      toast({
+        title: "Success",
+        description: subData.message,
+      });
+      router.replace(`/verify/${username}`);
+    }
+    if (error) {
+      console.log("error in signup of user", error);
+    }
+  };
 
   const checkUserNameUnique = async () => {
     if (debouncedUsername) {
@@ -57,6 +81,7 @@ function page() {
   useEffect(() => {
     checkUserNameUnique();
   }, [debouncedUsername]);
+
   return <div>page</div>;
 }
 
