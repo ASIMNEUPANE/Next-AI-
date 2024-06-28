@@ -1,9 +1,8 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Link from "next/link";
 import * as z from "zod";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDebounceValue } from "usehooks-ts";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
@@ -11,16 +10,17 @@ import { signUpSchema } from "@/schemas/signUpSchema";
 import axios, { AxiosError } from "axios";
 import usePost from "@/hooks/usePost";
 import useGet from "@/hooks/useGet";
-function page() {
-  const { data, isError, isPending, isSuccess, postMutation } = usePost("");
+
+const Page = () => {
+  const { toast } = useToast();
+  const router = useRouter();
+
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const debouncedUsername = useDebounceValue(username, 300);
-  const { toast } = useToast();
-  const router = useRouter();
 
   const {
     register,
@@ -35,54 +35,75 @@ function page() {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
-    const {
-      data: subData,
-      isError,
-      isPending,
-      isSuccess,
-      error,
-      postMutation,
-    } = usePost("user");
+  const {
+    error,
+    data: postData,
+    isError,
+    isPending: isPostPending,
+    isSuccess,
+    postMutation,
+  } = usePost("user");
 
-    postMutation({ urls: "sign-up", data });
+  const onSubmit = async (formData: z.infer<typeof signUpSchema>) => {
+    postMutation({ urls: "sign-up", data: formData });
 
+    if (isPostPending) {
+      return <div>Pending</div>;
+    }
     if (isSuccess) {
       toast({
         title: "Success",
-        description: subData.message,
+        description: postData.message,
       });
       router.replace(`/verify/${username}`);
     }
-    if (error) {
-      console.log("error in signup of user", error);
+
+    if (isError) {
+      toast({
+        title: "Signup failed",
+        description: error?.message,
+        variant: "destructive",
+      });
+      console.log("error in signup of user", error?.message);
     }
   };
-
-  const checkUserNameUnique = async () => {
-    if (debouncedUsername) {
-      setIsCheckingUsername(true);
-      setUsernameMessage("");
-
-      const { data, isError, isLoading, error } = useGet(
-        "getUsername",
-        `check-user-unique?username=${debouncedUsername}`,
-      );
-      setUsernameMessage(data.message);
-      setIsCheckingUsername(false);
-
-      if (error) {
-        setUsernameMessage(error.message);
-        setIsCheckingUsername(false);
-      }
-    }
-  };
+  const {
+    data,
+    fetchMutation,
+    error: getErr,
+    isError: getIsErr,
+    isPending,
+  } = useGet("checkusername", `check-username-unique?username=${"asim"}`);
 
   useEffect(() => {
-    checkUserNameUnique();
+    const checkUsernameUnique = async () => {
+      if (debouncedUsername) {
+        fetchMutation(
+          "checkusername",
+          `check-username-unique?username=${"asim"}`,
+        );
+
+        setUsernameMessage(data?.message);
+
+        if (getErr) {
+          toast({
+            title: "Error",
+            description: "Error while checking username",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+    checkUsernameUnique();
   }, [debouncedUsername]);
 
-  return <div>page</div>;
-}
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="text-center"></div>
+      </div>
+    </div>
+  );
+};
 
-export default page;
+export default Page;

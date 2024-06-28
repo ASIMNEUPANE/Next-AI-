@@ -2,6 +2,7 @@ import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import z from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
+import { use } from "react";
 
 const UsernameQuerySchema = z.object({
   username: usernameValidation,
@@ -15,7 +16,9 @@ export async function GET(request: Request) {
     const queryParam = {
       username: searchParams.get("username"),
     };
+    console.log(queryParam, "username=======");
     const result = UsernameQuerySchema.safeParse(queryParam);
+    console.log(result, "result");
     if (!result.success) {
       //result.error have all the error so i get username errors if there is
       const usernameErrors = result.error.format().username?._errors || [];
