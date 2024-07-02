@@ -57,11 +57,13 @@ const Page = () => {
     setIsSubmitting(true);
 
     await postMutation({ urls: "sign-up", data: formData });
-
-    if (postData) {
+    setIsSubmitting(false);
+  };
+  useEffect(() => {
+    if (postData?.success) {
       toast({
         title: "Success",
-        description: postData.message,
+        description: postData?.message,
       });
       router.replace(`/verify/${username}`);
     } else if (error) {
@@ -72,9 +74,8 @@ const Page = () => {
       });
       console.log("error in signup of user", error?.message);
     }
+  }, [postData, error]);
 
-    setIsSubmitting(false);
-  };
   //   Fix todo later for error
   // const {
   //   data,
@@ -166,7 +167,7 @@ const Page = () => {
                   <p
                     className={`text-sm ${usernameMessage === "Username is unique" ? "text-green-500" : "text-red-500"}`}
                   >
-                    test{usernameMessage}
+                    {usernameMessage}
                   </p>
                   <FormMessage />
                 </FormItem>
