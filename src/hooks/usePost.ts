@@ -17,7 +17,9 @@ const usePost = (qkey?: string) => {
       const { data } = await API.post(payload.urls, { ...payload.data });
       return data;
     },
-    onError(error) {},
+    // onError(error) {
+    //   data.message
+    // },
     onSuccess: async () => {
       if (qkey) {
         queryClient.invalidateQueries({ queryKey: [qkey] });
