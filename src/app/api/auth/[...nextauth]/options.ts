@@ -35,13 +35,11 @@ export const authOptions: NextAuthOptions = {
             user.password,
           );
           console.log(isPasswordCorrect, "isPasswordCorrect");
-          isPasswordCorrect
-            ? user
-            : (() => {
-                throw new Error("Password mismatch");
-              })();
-          console.log("pugyo");
-          console.log(user);
+          if (isPasswordCorrect) {
+            return user;
+          } else {
+            throw new Error("Incorrect password");
+          }
         } catch (error: any) {
           console.log(error, "er=============");
           throw new Error(error);
