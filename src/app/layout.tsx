@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/context/authProvider";
 import { Toaster } from "@/components/ui/toaster";
 import TanstackProvider from "@/providers/TanstackProvider";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       <TanstackProvider>
         <AuthProvider>
           <body className={inter.className}>
+            <Navbar />
             {children}
             <Toaster />
           </body>
