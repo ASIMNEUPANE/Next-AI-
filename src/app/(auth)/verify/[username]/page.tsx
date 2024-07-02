@@ -56,6 +56,7 @@ const page = () => {
     } else if (error) {
       toast({
         title: "Signup failed",
+        //@ts-ignore
         description: error?.response?.data?.message,
         variant: "destructive",
       });

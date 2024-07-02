@@ -22,8 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import useGet from "@/hooks/useGet";
-import { signIn } from "next-auth/react";
 
 const Page = () => {
   const { toast } = useToast();
@@ -55,7 +53,10 @@ const Page = () => {
   } = usePost("user");
 
   const onSubmit = async (formData: z.infer<typeof signUpSchema>) => {
-    await signIn("credentials");
+    setIsSubmitting(true);
+
+    await postMutation({ urls: "sign-up", data: formData });
+    setIsSubmitting(false);
   };
   useEffect(() => {
     if (postData?.success) {
@@ -67,6 +68,7 @@ const Page = () => {
     } else if (error) {
       toast({
         title: "Signup failed",
+        //@ts-ignore
         description: error?.response?.data?.message,
         variant: "destructive",
       });

@@ -34,12 +34,16 @@ export const authOptions: NextAuthOptions = {
             credentials.password,
             user.password,
           );
+          console.log(isPasswordCorrect, "isPasswordCorrect");
           isPasswordCorrect
             ? user
             : (() => {
                 throw new Error("Password mismatch");
               })();
+          console.log("pugyo");
+          console.log(user);
         } catch (error: any) {
+          console.log(error, "er=============");
           throw new Error(error);
         }
       },

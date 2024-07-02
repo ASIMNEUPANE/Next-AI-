@@ -38,15 +38,17 @@ const Page = () => {
 
   const onSubmit = async (formData: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
+    console.log(formData);
     const result = await signIn("credentials", {
       redirect: false,
       identifier: formData.identifier,
       password: formData.password,
     });
     if (result?.error) {
+      console.log(result);
       toast({
         title: "Signin failed",
-        description: "Incorrect username or password",
+        description: result.error,
         variant: "destructive",
       });
       setIsSubmitting(false);
