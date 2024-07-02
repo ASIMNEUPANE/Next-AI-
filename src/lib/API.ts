@@ -5,9 +5,9 @@ const API = axios.create({
   baseURL: SERVER_URL,
   headers: {
     "Content-Type": "application/json",
-    Authorization: window.localStorage.getItem("access_token")
-      ? "Bearer " + window.localStorage.getItem("access_token")
-      : null,
+    // Authorization: window.localStorage.getItem("access_token")
+    //   ? "Bearer " + window.localStorage.getItem("access_token")
+    //   : null,
   },
 });
 
