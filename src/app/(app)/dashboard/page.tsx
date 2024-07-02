@@ -271,7 +271,7 @@ function UserDashboard() {
       setIsSwitchLoading(false);
       try {
         const response = await axios.get<ApiResponse>("/api/get-messages");
-        setMessages(response.data.messages || []);
+        setMessages(response?.data?.messages || []);
         if (refresh) {
           toast({
             title: "Refreshed Messages",
@@ -391,7 +391,7 @@ function UserDashboard() {
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <MessageCard
-              key={message._id}
+              key={message?._id}
               message={message}
               onMessageDelete={handleDeleteMessage}
             />
