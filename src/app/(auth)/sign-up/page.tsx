@@ -76,7 +76,7 @@ const Page = () => {
     }
   }, [postData, error]);
 
-  //   Fix todo later for error
+  // Fix todo later for error
   // const {
   //   data,
   //   fetchMutation,
@@ -118,13 +118,12 @@ const Page = () => {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`,
           );
-          console.log(response.data.message);
-          setUsernameMessage(response.data.message);
+          setUsernameMessage(response?.data?.message);
           setIsCheckingUsername(false);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
-            axiosError.response?.data.message ?? "Error checking username",
+            axiosError?.response?.data?.message ?? "Error checking username",
           );
         } finally {
           setIsCheckingUsername(false);
@@ -133,7 +132,6 @@ const Page = () => {
     };
     checkUsernameUnique();
   }, [username]);
-  console.log(usernameMessage, "pagheswala");
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

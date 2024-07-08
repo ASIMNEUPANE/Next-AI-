@@ -391,6 +391,7 @@ function UserDashboard() {
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <MessageCard
+              //@ts-ignore
               key={message?._id}
               message={message}
               onMessageDelete={handleDeleteMessage}
