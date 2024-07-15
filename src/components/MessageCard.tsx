@@ -43,8 +43,8 @@ function MessageCard({ message, onMessageDelete }: MessageCardProps) {
   } = useDelete("user");
 
   const handleDeleteConfirm = async () => {
-    await deleteMutation({ urls: `delete-message/${message._id}` });
-    onMessageDelete(message._id as string);
+    await deleteMutation({ urls: `delete-message/${message?._id}` });
+    onMessageDelete(message?._id as string);
   };
 
   useEffect(() => {

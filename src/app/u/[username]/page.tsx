@@ -43,6 +43,7 @@ export default function SendMessage() {
     completion,
     isLoading: isSuggestLoading,
     error,
+    data,
   } = useCompletion({
     api: "/api/suggest-messages",
     initialCompletion: initialMessageString,
@@ -89,6 +90,7 @@ export default function SendMessage() {
   const fetchSuggestedMessages = async () => {
     try {
       complete("");
+      console.log(data, "suggestdata");
     } catch (error) {
       console.error("Error fetching messages:", error);
       // Handle error appropriately

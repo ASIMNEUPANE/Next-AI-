@@ -44,11 +44,12 @@ const Page = () => {
       identifier: formData.identifier,
       password: formData.password,
     });
+    console.log(result, "jasd");
     if (result?.error) {
       console.log(result);
       toast({
         title: "Signin failed",
-        description: result.error,
+        description: result?.error,
         variant: "destructive",
       });
       setIsSubmitting(false);
